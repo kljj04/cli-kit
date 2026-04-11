@@ -24,6 +24,8 @@ class KitBuilder {
         this._b = 255;
         this._styles = [];
         this._outputType = 'print';
+        this._override = false;
+        this._gradientColors = null;
     }
 
     color(r, g, b) {
@@ -33,10 +35,17 @@ class KitBuilder {
         return this;
     }
 
+    gradient(from, to) {
+        this._gradientColors = [from, to];
+        return this;
+    }
+
     style(...args) {
         const outputTypes = ['print', 'box', 'spinner', 'progress', 'table'];
         args.forEach(arg => {
-            if (outputTypes.includes(arg)) {
+            if (arg === 'override') {
+                this._override = true;
+            } else if (outputTypes.includes(arg)) {
                 this._outputType = arg;
             } else if (STYLES[arg]) {
                 this._styles.push(arg);
@@ -46,7 +55,7 @@ class KitBuilder {
     }
 
     _buildPrefix() {
-        const colorCode = rgb(this._r, this._g, this._b);
+        const colorCode = this._gradientColors ? '' : rgb(this._r, this._g, this._b);
         const styleCodes = this._styles.map(s => STYLES[s]).join('');
         return `${colorCode}${styleCodes}`;
     }
@@ -63,15 +72,16 @@ class KitBuilder {
             case 'spinner':
                 return require('./spinner').spinner(prefix, value);
             case 'progress':
-                require('./progress').progress(prefix, value);
+                require('./progress').progress(prefix, value, this._override, this._gradientColors);
                 break;
             case 'table':
                 require('./table').table(prefix, value);
                 break;
         }
-        // reset for next use
         this._styles = [];
         this._outputType = 'print';
+        this._override = false;
+        this._gradientColors = null;
     }
 }
 

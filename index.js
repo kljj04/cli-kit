@@ -6,6 +6,9 @@ const kit = {
     },
     style(...args) {
         return new KitBuilder().style(...args);
+    },
+    gradient(from, to) {
+        return new KitBuilder().gradient(from, to);
     }
 };
 
