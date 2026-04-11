@@ -156,11 +156,10 @@ kit.color(255, 200, 0).style('progress').context(72)
 ```
 
 **Live mode** — pass `{ value, override: true }` to overwrite the same line.  
-Useful inside loops or intervals.
+Useful inside loops or intervals. -Obsolete
 
 ```js
-// style에 override 추가
-kit.color(0, 255, 150).style('progress', 'override').context(i)
+kit.color(0, 255, 150).style('progress', 'override').context(i) //Now available
 ```
 
 Example with interval:

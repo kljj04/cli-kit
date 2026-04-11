@@ -1,11 +1,7 @@
-> [!WARNING]
-> This README is old and outdated. It will be updated as soon as possible.
-> AI.md, README.long.md too.
-
 # @kljj04/cli-kit
 
 All-in-one terminal styling library for Node.js.  
-RGB truecolor, boxes, tables, spinners, and progress bars — all in one package.
+RGB truecolor, gradients, boxes, tables, spinners, and progress bars — all in one package.
 
 ## Install
 
@@ -19,10 +15,12 @@ All styling follows the same chain pattern:
 
 ```js
 kit.color(R, G, B).style(...styles).context(value)
+kit.gradient([R, G, B], [R, G, B]).style(...styles).context(value)
 ```
 
 - **`color(r, g, b)`** — RGB truecolor (0–255 each)
-- **`style(...args)`** — one or more text styles, plus an optional output type
+- **`gradient([r,g,b], [r,g,b])`** — gradient from start color to end color
+- **`style(...args)`** — one or more text styles, plus an output type
 - **`context(value)`** — the content to render
 
 ---
@@ -39,6 +37,12 @@ Pass any of these as arguments to `.style()`:
 | `underline` | Underlined text |
 | `inverse` | Inverted colors |
 | `strikethrough` | Strikethrough text |
+
+Multiple styles can be combined:
+
+```js
+kit.color(200, 100, 255).style('bold', 'italic', 'underline').context('combined!')
+```
 
 ---
 
@@ -87,6 +91,28 @@ kit.color(255, 200, 0).style('progress').context(72)
 // [██████████████████████░░░░░░░░] 72%
 ```
 
+#### Options for `progress`
+
+| Option | Description |
+|---|---|
+| `override` | Overwrites the current line (for live updates) |
+| `fixedgradient` | Fills the entire bar with the gradient upfront; progress reveals it left to right |
+
+```js
+// Live gradient progress bar
+let i = 0;
+const iv = setInterval(() => {
+    i++;
+    kit.gradient([255, 0, 0], [0, 255, 255]).style('progress', 'override', 'fixedgradient').context(i);
+    if (i >= 100) clearInterval(iv);
+}, 50);
+```
+
+**`fixedgradient` vs default gradient behavior:**
+
+- Default: the gradient range grows as progress increases (50% progress shows only the first half of the gradient)
+- `fixedgradient`: the full gradient is mapped across the entire bar at all times; progress is shown by how much of the bar is filled
+
 ### `table`
 
 Pass an array of objects. Keys become headers.
@@ -105,6 +131,17 @@ kit.color(200, 150, 255).style('table').context([
 │ Alice │ 20  │ dev      │
 │ Bob   │ 25  │ designer │
 └───────┴─────┴──────────┘
+```
+
+---
+
+## Gradient
+
+Use `kit.gradient()` instead of `kit.color()` to apply a color gradient.  
+Works with `progress` and `print` output types.
+
+```js
+kit.gradient([255, 30, 0], [180, 0, 255]).style('progress').context(75)
 ```
 
 ---
