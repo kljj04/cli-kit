@@ -1,6 +1,6 @@
 {
   "name": "@kljj04/cli-kit",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "All-in-one terminal styling library. Colors, boxes, tables, spinners, and progress bars.",
   "main": "index.js",
   "scripts": {
@@ -12,6 +12,10 @@
   ],
   "author": "kljj04",
   "license": "MIT",
+  "repository": {
+  "type": "git",
+  "url": "https://github.com/a93137258-ai/cli-kit.git"
+},
   "files": [
     "index.js",
     "src/",
