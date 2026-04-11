@@ -1,6 +1,6 @@
 {
   "name": "@kljj04/cli-kit",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "All-in-one terminal styling library. Colors, boxes, tables, spinners, and progress bars.",
   "main": "index.js",
   "scripts": {
