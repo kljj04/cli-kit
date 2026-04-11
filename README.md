@@ -1,3 +1,7 @@
+> [!WARNING]
+> This README is old and outdated. It will be updated as soon as possible.
+> AI.md, README.long.md too.
+
 # @kljj04/cli-kit
 
 All-in-one terminal styling library for Node.js.  

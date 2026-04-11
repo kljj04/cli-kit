@@ -26,6 +26,7 @@ class KitBuilder {
         this._outputType = 'print';
         this._override = false;
         this._gradientColors = null;
+        this._fixedGradient = false;
     }
 
     color(r, g, b) {
@@ -45,6 +46,8 @@ class KitBuilder {
         args.forEach(arg => {
             if (arg === 'override') {
                 this._override = true;
+            } else if (arg === 'fixedgradient') {
+                this._fixedGradient = true;
             } else if (outputTypes.includes(arg)) {
                 this._outputType = arg;
             } else if (STYLES[arg]) {
@@ -72,7 +75,7 @@ class KitBuilder {
             case 'spinner':
                 return require('./spinner').spinner(prefix, value);
             case 'progress':
-                require('./progress').progress(prefix, value, this._override, this._gradientColors);
+                require('./progress').progress(prefix, value, this._override, this._gradientColors, this._fixedGradient);
                 break;
             case 'table':
                 require('./table').table(prefix, value);
@@ -82,6 +85,7 @@ class KitBuilder {
         this._outputType = 'print';
         this._override = false;
         this._gradientColors = null;
+        this._fixedGradient = false;
     }
 }
 
