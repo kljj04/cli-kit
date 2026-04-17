@@ -1,7 +1,7 @@
 # @kljj04/cli-kit
 
-All-in-one terminal styling library for Node.js.  
-RGB truecolor, gradients, boxes, tables, spinners, and progress bars — all in one package.
+All-in-one terminal styling library for Node.js.
+Zero-dependency, fluent API for creating beautiful and interactive command-line interfaces. Supports RGB truecolor, gradients, boxes, tables, spinners, and progress bars.
 
 ## Install
 
@@ -9,25 +9,28 @@ RGB truecolor, gradients, boxes, tables, spinners, and progress bars — all in 
 npm install @kljj04/cli-kit
 ```
 
-## Usage
+## Core Concept
 
-All styling follows the same chain pattern:
+All styling follows a consistent, chainable pattern:
 
 ```js
-kit.color(R, G, B).style(...styles).context(value)
-kit.gradient([R, G, B], [R, G, B]).style(...styles).context(value)
+const kit = require('@kljj04/cli-kit');
+
+// Using a solid color
+kit.color(R, G, B).style(...styles).context(value);
+
+// Using a gradient
+kit.gradient([R, G, B], [R, G, B]).style(...styles).context(value);
 ```
 
-- **`color(r, g, b)`** — RGB truecolor (0–255 each)
-- **`gradient([r,g,b], [r,g,b])`** — gradient from start color to end color
-- **`style(...args)`** — one or more text styles, plus an output type
-- **`context(value)`** — the content to render
-
----
+- **`.color(r, g, b)`**: Sets a solid foreground color using RGB truecolor (0–255 each).
+- **`.gradient([r,g,b], [r,g,b])`**: Sets a color gradient from a start color to an end color.
+- **`.style(...args)`**: Applies text styles and sets the output format.
+- **`.context(value)`**: Provides the content and renders the final output.
 
 ## Text Styles
 
-Pass any of these as arguments to `.style()`:
+Pass any of these string arguments to `.style()` to apply text formatting. They can be combined.
 
 | Style | Description |
 |---|---|
@@ -35,116 +38,134 @@ Pass any of these as arguments to `.style()`:
 | `dim` | Dimmed text |
 | `italic` | Italic text |
 | `underline` | Underlined text |
-| `inverse` | Inverted colors |
+| `inverse` | Inverts foreground/background colors |
 | `strikethrough` | Strikethrough text |
 
-Multiple styles can be combined:
-
 ```js
-kit.color(200, 100, 255).style('bold', 'italic', 'underline').context('combined!')
+kit.color(200, 100, 255).style('bold', 'italic').context('Combined styles!');
 ```
 
 ---
 
 ## Output Types
 
-Pass one of these as an argument to `.style()` to change the output format.  
-Default is `print` if omitted.
+Pass one of the following arguments to `.style()` to define the output format. If no output type is specified, it defaults to `print`.
 
 ### `print` (default)
 
+Prints styled plain text to the console.
+
 ```js
-kit.color(255, 100, 50).style('bold').context('Hello!')
-kit.color(255, 100, 50).style('bold', 'print').context('Hello!')
+kit.color(255, 100, 50).style('bold').context('Hello, world!');
+// is the same as:
+kit.color(255, 100, 50).style('bold', 'print').context('Hello, world!');
 ```
 
 ### `box`
 
-Wraps the text in a Unicode box. Supports multiline strings.
+Wraps the text content in a Unicode box. It automatically adjusts to the text width and supports multiline strings (`
+`).
 
 ```js
-kit.color(100, 200, 255).style('box').context('Hello!')
-kit.color(100, 200, 255).style('bold', 'box').context('Line one\nLine two')
+kit.color(100, 200, 255).style('box').context('This is in a box.');
+kit.color(150, 255, 100).style('bold', 'box').context('Line one
+Line two');
 ```
-
 ```
-┌────────┐
-│ Hello! │
-└────────┘
+┌───────────────────┐
+│ This is in a box. │
+└───────────────────┘
+┌──────────┐
+│ Line one │
+│ Line two │
+└──────────┘
 ```
 
 ### `spinner`
 
-Returns a spinner object. Call `.stop(text)` to stop it.
+Displays an animated spinner. This is useful for indicating long-running tasks. The `.context()` method returns a spinner object with a `.stop()` method.
 
 ```js
-const s = kit.color(0, 255, 200).style('spinner').context('Loading...')
-setTimeout(() => s.stop('Done!'), 2000)
+const s = kit.color(0, 255, 200).style('spinner').context('Loading data...');
+
+// After your async task is done
+s.stop('Data loaded!'); // Stops the spinner and prints a final message.
+// or
+s.stop(); // Stops the spinner silently.
+```
+
+### `table`
+
+Generates a formatted table from an array of objects. The object keys are automatically used as table headers.
+
+```js
+const data = [
+    { module: 'Core', status: 'OK', version: '1.2.0' },
+    { module: 'Network', status: 'OK', version: '1.1.0' },
+    { module: 'Logger', status: 'Warn', version: '1.0.0' },
+];
+
+kit.color(200, 150, 255).style('table').context(data);
+```
+```
+┌─────────┬────────┬─────────┐
+│ module  │ status │ version │
+┼─────────┼────────┼─────────┼
+│ Core    │ OK     │ 1.2.0   │
+│ Network │ OK     │ 1.1.0   │
+│ Logger  │ Warn   │ 1.0.0   │
+└─────────┴────────┴─────────┘
 ```
 
 ### `progress`
 
-Pass a number from 0 to 100.
+Displays a progress bar. The `.context()` should be passed a number from 0 to 100.
 
 ```js
-kit.color(255, 200, 0).style('progress').context(72)
-// [██████████████████████░░░░░░░░] 72%
+kit.color(255, 200, 0).style('progress').context(75);
+// [██████████████████████░░░░░░] 75%
 ```
 
-#### Options for `progress`
+#### Live Progress Bars
 
-| Option | Description |
-|---|---|
-| `override` | Overwrites the current line (for live updates) |
-| `fixedgradient` | Fills the entire bar with the gradient upfront; progress reveals it left to right |
+To create a progress bar that updates on the same line, add the `'override'` style.
 
 ```js
-// Live gradient progress bar
+let percentage = 0;
+const interval = setInterval(() => {
+    percentage++;
+    kit.color(0, 255, 150).style('progress', 'override').context(percentage);
+    if (percentage >= 100) {
+        clearInterval(interval);
+        // The 'override' style automatically adds a newline when 100% is reached.
+    }
+}, 30);
+```
+
+#### Gradient Progress Bars
+
+Use `.gradient()` instead of `.color()` to create a progress bar with a smooth color transition. The gradient is calculated in the perceptually uniform OKLCH color space for superior visual quality.
+
+```js
+kit.gradient([255, 0, 0], [0, 255, 255]).style('progress').context(50);
+```
+
+You can also use gradients with live progress bars. For the best visual effect, add the `'fixedgradient'` style.
+
+- **Default Gradient**: The gradient range grows with the progress. At 50% progress, you only see the first half of the gradient's colors.
+- **`'fixedgradient'`**: The full gradient is mapped across the entire width of the bar from the start. Progress is shown by "revealing" the colored bar from left to right.
+
+```js
+// Live progress bar with a fixed gradient
 let i = 0;
 const iv = setInterval(() => {
     i++;
-    kit.gradient([255, 0, 0], [0, 255, 255]).style('progress', 'override', 'fixedgradient').context(i);
+    kit.gradient([255, 0, 0], [0, 255, 255])
+       .style('progress', 'override', 'fixedgradient')
+       .context(i);
     if (i >= 100) clearInterval(iv);
 }, 50);
 ```
-
-**`fixedgradient` vs default gradient behavior:**
-
-- Default: the gradient range grows as progress increases (50% progress shows only the first half of the gradient)
-- `fixedgradient`: the full gradient is mapped across the entire bar at all times; progress is shown by how much of the bar is filled
-
-### `table`
-
-Pass an array of objects. Keys become headers.
-
-```js
-kit.color(200, 150, 255).style('table').context([
-    { name: 'Alice', age: 20, role: 'dev' },
-    { name: 'Bob',   age: 25, role: 'designer' },
-])
-```
-
-```
-┌───────┬─────┬──────────┐
-│ name  │ age │ role     │
-┼───────┼─────┼──────────┼
-│ Alice │ 20  │ dev      │
-│ Bob   │ 25  │ designer │
-└───────┴─────┴──────────┘
-```
-
----
-
-## Gradient
-
-Use `kit.gradient()` instead of `kit.color()` to apply a color gradient.  
-Works with `progress` and `print` output types.
-
-```js
-kit.gradient([255, 30, 0], [180, 0, 255]).style('progress').context(75)
-```
-
----
 
 ## License
 
