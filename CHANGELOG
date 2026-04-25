@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.3.1] - 2025-02-14
+
+### Added
+- Added `examples/interactive-menu.js` to demonstrate how to build complex UIs.
+
+### Improved
+- Greatly improved character width calculation in `box()` to support Emojis and Surrogate Pairs.
+- Fixed box alignment issues when mixing CJK characters and Emojis.
+
 ## [1.3.0] - 2025-02-14
 
 ### Release 1.3.0

@@ -4,13 +4,26 @@ function getWidth(str) {
     let width = 0;
     for (let i = 0; i < str.length; i++) {
         const code = str.charCodeAt(i);
-        // 한글 및 전각 문자 범위 체크 (대략적인 범위)
-        if (code >= 0x1100 && (
-            code <= 0x11ff || 
-            (code >= 0x3130 && code <= 0x318f) || 
-            (code >= 0xac00 && code <= 0xd7af) ||
-            (code >= 0xff01 && code <= 0xff60)
-        )) {
+        
+        // Surrogate pair 체크 (이모지 등)
+        if (code >= 0xD800 && code <= 0xDBFF) {
+            width += 2;
+            i++; // 다음 code unit은 건너뜀
+            continue;
+        }
+
+        // 전각 문자, 한글, 넓은 기호 범위 체크
+        if (
+            (code >= 0x1100 && code <= 0x11ff) || // 한글 자모
+            (code >= 0x2e80 && code <= 0xa4cf) || // CJK 부수, 기호, 한자 등
+            (code >= 0xac00 && code <= 0xd7af) || // 한글 가나다
+            (code >= 0xf900 && code <= 0xfaff) || // CJK 호환 한자
+            (code >= 0xfe10 && code <= 0xfe1f) || // 세로 쓰기 형태
+            (code >= 0xfe30 && code <= 0xfe6f) || // CJK 호환 형태
+            (code >= 0xff00 && code <= 0xff60) || // 전각 형태
+            (code >= 0xffe0 && code <= 0xffe6) || // 전각 기호
+            (code >= 0x2000 && code <= 0x32ff)    // 각종 기호 및 이모지 포함 범위
+        ) {
             width += 2;
         } else {
             width += 1;

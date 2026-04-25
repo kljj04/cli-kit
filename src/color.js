@@ -94,6 +94,7 @@ class KitBuilder {
                 require('./table').table(prefix, value);
                 break;
         }
+
         this._styles = [];
         this._outputType = 'print';
         this._override = false;
