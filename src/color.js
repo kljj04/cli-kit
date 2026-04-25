@@ -22,6 +22,10 @@ class KitBuilder {
         this._r = 255;
         this._g = 255;
         this._b = 255;
+        this._bgR = 0;
+        this._bgG = 0;
+        this._bgB = 0;
+        this._hasBg = false;
         this._styles = [];
         this._outputType = 'print';
         this._override = false;
@@ -33,6 +37,14 @@ class KitBuilder {
         this._r = r;
         this._g = g;
         this._b = b;
+        return this;
+    }
+
+    bgColor(r, g, b) {
+        this._bgR = r;
+        this._bgG = g;
+        this._bgB = b;
+        this._hasBg = true;
         return this;
     }
 
@@ -59,8 +71,9 @@ class KitBuilder {
 
     _buildPrefix() {
         const colorCode = this._gradientColors ? '' : rgb(this._r, this._g, this._b);
+        const bgColorCode = this._hasBg ? bgRgb(this._bgR, this._bgG, this._bgB) : '';
         const styleCodes = this._styles.map(s => STYLES[s]).join('');
-        return `${colorCode}${styleCodes}`;
+        return `${colorCode}${bgColorCode}${styleCodes}`;
     }
 
     context(value) {
@@ -86,6 +99,10 @@ class KitBuilder {
         this._override = false;
         this._gradientColors = null;
         this._fixedGradient = false;
+        this._hasBg = false;
+        this._bgR = 0;
+        this._bgG = 0;
+        this._bgB = 0;
     }
 }
 

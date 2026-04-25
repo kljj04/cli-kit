@@ -4,6 +4,9 @@ const kit = {
     color(r, g, b) {
         return new KitBuilder().color(r, g, b);
     },
+    bgColor(r, g, b) {
+        return new KitBuilder().bgColor(r, g, b);
+    },
     style(...args) {
         return new KitBuilder().style(...args);
     },

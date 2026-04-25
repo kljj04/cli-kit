@@ -19,11 +19,15 @@ const kit = require('@kljj04/cli-kit');
 // Using a solid color
 kit.color(R, G, B).style(...styles).context(value);
 
+// Using background color
+kit.bgColor(R, G, B).color(R, G, B).style(...styles).context(value);
+
 // Using a gradient
 kit.gradient([R, G, B], [R, G, B]).style(...styles).context(value);
 ```
 
 - **`.color(r, g, b)`**: Sets a solid foreground color using RGB truecolor (0–255 each).
+- **`.bgColor(r, g, b)`**: Sets a solid background color using RGB truecolor.
 - **`.gradient([r,g,b], [r,g,b])`**: Sets a color gradient from a start color to an end color.
 - **`.style(...args)`**: Applies text styles and sets the output format.
 - **`.context(value)`**: Provides the content and renders the final output.

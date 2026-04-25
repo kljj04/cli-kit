@@ -235,7 +235,6 @@ const iv = setInterval(() => {
 
 - `gradient([r,g,b], [r,g,b])` — per-character color interpolation for progress bars
 - `style('round', 'box')` — rounded box corners
-- `bgColor(r, g, b)` — background color support
 
 ---
 

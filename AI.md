@@ -16,10 +16,11 @@ This file is structured for AI assistants to quickly understand the API.
 Every call follows this exact chain:
 
 ```
-kit.color(r, g, b).style(...args).context(value)
+kit.bgColor(r, g, b).color(r, g, b).style(...args).context(value)
 ```
 
-- `color(r, g, b)` — RGB integers 0–255
+- `bgColor(r, g, b)` — (Optional) Background RGB integers 0–255
+- `color(r, g, b)` — Foreground RGB integers 0–255
 - `style(...args)` — any mix of text styles + one output type
 - `context(value)` — the content to render
 
